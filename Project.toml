@@ -27,10 +27,10 @@ SymbolicUtils = "d1185830-fcd6-423d-90d6-eec64667417b"
 Symbolics = "0c5d862f-8b57-4792-8d23-62f2024744c7"
 TOML = "fa267f1f-6049-4f14-aa54-33bafae1ed76"
 TermInterface = "8ea1fca8-c5ef-4a55-8b96-4e9afe9c9a3c"
-YAML = "ddb6d928-2868-570f-bddf-ab3f9cf99eb6"
 
 [compat]
 Accessors = "0.1.44"
+Aqua = "0.8.16"
 ArgParse = "1.2.0"
 CSV = "0.10.16"
 DataFrames = "1.8.2"
@@ -48,14 +48,15 @@ SymbolicUtils = "4.25.1"
 Symbolics = "7.19.0"
 TOML = "1.0.3"
 TermInterface = "2.0.0"
-YAML = "0.4.16"
+Test = "1.11.0"
 julia = "1.12"
 
 [apps.jessamine]
 submodule = "AppSimple"
 
 [extras]
+Aqua = "4c88cf16-eb10-579e-8560-4a9242c79595"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [targets]
-test = ["Test"]
+test = ["Aqua", "Test"]
