@@ -21,5 +21,9 @@ include("CField.jl")
 include("Config.jl")
 include("Search.jl")
 include("Regression.jl")
+include("Utils.jl")
+
+# AppSimple
+include("AppSimple.jl")
 
 end
