@@ -1,0 +1,13 @@
+name = "JessamineCLI"
+uuid = "f8b86c12-3719-4e11-bd1f-9550edae6fe8"
+authors = ["W. Garrett Mitchener <mitchenerg@charleston.edu> and others"]
+version = "1.0.0-DEV"
+
+[compat]
+julia = "1.12.6"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
