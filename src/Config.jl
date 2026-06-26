@@ -47,6 +47,7 @@ function parse_search_spec(ps::AbstractDict, input_size::Int)
         simplification_prespec = merge(ps, simplification_prespec)
         simplification_spec = parse_epoch_spec(op_inventory_actual, simplification_prespec)
     end
+    #! format: off
     return ExploreSimplifySearchSpec(
         ;
         genome_spec,
@@ -63,6 +64,7 @@ function parse_search_spec(ps::AbstractDict, input_size::Int)
         @cfield ps stop_threshold nothing Union{Float64,Nothing}
         ,
     )
+    #! format: on
 end
 
 
@@ -146,6 +148,7 @@ function parse_mutation_spec(op_inventory, ps::AbstractDict = Dict())
     @cfield ps operation_weights Dict() AbstractDict
     weight_scheme = parse_op_weight_scheme(operation_weights)
     @debug "parse_mutation_spec: ps: $ps"
+    #! format:off
     m_spec = mutation_spec_auto_weight(
         op_inventory,
         weight_scheme;
@@ -163,11 +166,13 @@ function parse_mutation_spec(op_inventory, ps::AbstractDict = Dict())
         ,
         @cfield ps p_hop_instruction 0.015
     )
+    #! format: on
     @debug "parse_mutation_spec: m_spec: $m_spec"
     return m_spec
 end
 
 function parse_selection_spec(ps::AbstractDict = Dict())
+    #! format: off
     SelectionSpec(
         ;
         @cfield ps num_to_keep 25
@@ -178,6 +183,7 @@ function parse_selection_spec(ps::AbstractDict = Dict())
         ,
         @cfield ps p_take_very_best 0.05
     )
+    #! format: on
 end
 
 """
