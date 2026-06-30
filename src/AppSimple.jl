@@ -7,10 +7,12 @@ using ArgParse
 using CSV
 using DataFrames
 using Dates
-using JSON
+using FileIO
 using Jessamine
 using JessamineCLI
 using JessamineCLI: @cfield
+using JLD2
+using JSON
 using Logging
 using Pkg
 using Printf
@@ -61,9 +63,9 @@ sr_args_input = [
 ]
 
 sr_args_output = [
-    ["--output-file"],
+    ["--output-file-stem"],
     Dict(
-        :help => "output file path",
+        :help => "output file path and stem; .json and .jld2 will be appended",
         :arg_type => String
     ),
     ["--config-dump-file"],
@@ -71,9 +73,9 @@ sr_args_output = [
         :help => "save the overall argument configuration to a TOML file",
         :arg_type => String
     ),
-    ["--progress-file"],
+    ["--progress-file-stem"],
     Dict(
-        :help => "store each highest-rated agent in this file as it is discovered",
+        :help => "store each highest-rated agent in a file as it is discovered; .json and .jld2 will be appended",
         :arg_type => String
     )
 ]
@@ -219,11 +221,12 @@ function cmd_sr(prespec)
 
     result = regression_main_detailed(X, y, prespec; verbosity)
 
-    output_file = get(prespec, "output_file", nothing)
-    if !isnothing(output_file)
-        @debug "Writing to $output_file"
-        mkpath(dirname(output_file))
-        JSON.json(output_file, result)
+    output_file_stem = get(prespec, "output_file_stem", nothing)
+    if !isnothing(output_file_stem)
+        @debug "Writing to $output_file.json"
+        mkpath(dirname(output_file_stem))
+        JSON.json(output_file_stem * ".json", result)
+        save(output_file_stem * ".jld2", Dict("result" => result))
     end
 
     return 0
@@ -286,8 +289,8 @@ function cmd_setup_samples(prespec)
         output_dir = joinpath(sr_output_dir, dataset, @sprintf("%0*d", n_digits, j))
         prespec_sr_j = Dict(
             "random_state" => subseed,
-            "output_file" => joinpath(output_dir, "result.json"),
-            "progress_file" => joinpath(output_dir, "progress.json"),
+            "output_file_stem" => joinpath(output_dir, "result"),
+            "progress_file_stem" => joinpath(output_dir, "progress"),
             "log_file" => joinpath(output_dir, "log.txt"),
         )
         prespec_j = merge(prespec, prespec_sr_j)

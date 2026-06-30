@@ -5,15 +5,25 @@ export regression_main, regression_main_detailed
 # which the module was compiled.
 start_time::Union{Nothing,DateTime} = nothing
 
-function save_progress_file(progress_file, agent)
-    @debug "save_progress_file: Writing" progress_file=progress_file agent=agent
-    mkpath(dirname(progress_file))
+function save_progress_file(progress_file_stem, agent)
+    @debug "save_progress_file: Writing" progress_file_stem=progress_file_stem agent=agent
+    mkpath(dirname(progress_file_stem))
     report = Dict(
         "current_time" => now(),
         "start_time" => start_time,
         "agent" => agent,
     )
-    JSON.json(progress_file, report)
+    save(progress_file_stem * ".jld2", Dict("report" => report))
+    json_report = Dict(
+        "current_time" => now(),
+        "start_time" => start_time,
+        "agent" => (
+            rating=agent.rating,
+            genome=very_short_show(agent.genome),
+            parameter=agent.parameter,
+            extra=agent.extra,
+        ))
+    JSON.json(progress_file_stem * ".json", json_report)
 end
 
 function run_regression(
@@ -88,12 +98,12 @@ function regression_main_detailed(
     @debug "regression_main: stop_deadline = $stop_deadline"
     @cfield prespec stop_threshold nothing Union{Float64,Nothing}
     @debug "regression_main: stop_threshold = $stop_threshold"
-    @cfield prespec progress_file nothing Union{String,Nothing}
-    new_best_agent_hook = if isnothing(progress_file)
+    @cfield prespec progress_file_stem nothing Union{String,Nothing}
+    new_best_agent_hook = if isnothing(progress_file_stem)
         nothing
     else
         @debug "regression_main: progress_file = $progress_file"
-        agent -> save_progress_file(progress_file, agent)
+        agent -> save_progress_file(progress_file_stem, agent)
     end
 
     global start_time = now()

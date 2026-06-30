@@ -7,6 +7,8 @@ using Distributions
 using Printf
 using Random
 
+using FileIO
+using JLD2
 using JSON
 using StatsBase
 using StructUtils
