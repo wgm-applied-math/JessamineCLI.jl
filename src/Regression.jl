@@ -102,7 +102,7 @@ function regression_main_detailed(
     new_best_agent_hook = if isnothing(progress_file_stem)
         nothing
     else
-        @debug "regression_main: progress_file = $progress_file"
+        @debug "regression_main: progress_file_stem = $progress_file_stem"
         agent -> save_progress_file(progress_file_stem, agent)
     end
 
