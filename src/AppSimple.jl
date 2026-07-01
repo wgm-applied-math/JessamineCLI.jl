@@ -223,7 +223,7 @@ function cmd_sr(prespec)
 
     output_file_stem = get(prespec, "output_file_stem", nothing)
     if !isnothing(output_file_stem)
-        @debug "Writing to $output_file.json"
+        @debug "Writing to $output_file_stem.json"
         mkpath(dirname(output_file_stem))
         JSON.json(output_file_stem * ".json", result)
         save(output_file_stem * ".jld2", Dict("result" => result))
