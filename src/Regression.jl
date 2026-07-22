@@ -41,23 +41,27 @@ function run_regression(
     discovery_channel = Channel{Agent}(100)
     best_so_far = nothing
     all_discoveries = []
+
+    function maybe_record_discovery(a)
+        @debug "run_regression: Received agent with rating $(a.rating)"
+        push!(all_discoveries, a)
+        if isnothing(best_so_far) || a.rating < best_so_far.rating
+            @debug_or_info verbosity "run_regression: New best" rating=a.rating agent=very_short_show(a)
+            best_so_far = a
+            if !isnothing(new_best_agent_hook)
+                @debug "run_regression: Running new_best_agent_hook"
+                new_best_agent_hook(a)
+            else
+                @debug "run_regression: No new_best_agent_hook"
+            end
+        elseif !isnothing(best_so_far)
+            @debug "run_regression: Not better than $(best_so_far.rating)"
+        end
+    end
+
     Threads.@spawn begin
         for a in discovery_channel
-            @debug "run_regression: Received agent with rating $(a.rating)"
-            push!(all_discoveries, a)
-            if isnothing(best_so_far) || a.rating < best_so_far.rating
-                @debug_or_info verbosity "run_regression: New best rating $(a.rating):\n$(very_short_show(a))"
-                best_so_far = a
-                if !isnothing(new_best_agent_hook)
-                    @debug "run_regression: Running new_best_agent_hook"
-                    new_best_agent_hook(a)
-                else
-                    @debug "run_regression: No new_best_agent_hook"
-                end
-            elseif !isnothing(best_so_far)
-                @debug "run_regression: Not better than $(best_so_far.rating)"
-            end
-
+            maybe_record_discovery(a)
         end
     end
 
@@ -66,8 +70,16 @@ function run_regression(
         run_many_islands(X, y, discovery_channel, prespec;
                          stop_deadline, stop_threshold, rng, verbosity)
 
+    # Clear any remaining discoveries: Wait up to 10 seconds
+    # until discovery_channel is no longer ready to be read.
+    timedwait(() -> !isready(discovery_channel), 10.0)
+
     @debug_or_info verbosity "run_regression: Islands ended, condition = $condition"
-    @debug_or_info verbosity "run_regression: best rating: $(best_so_far.rating)"
+    if isnothing(best_so_far)
+        @debug_or_info verbosity "run_regression: Never found a good genome"
+    else
+        @debug_or_info verbosity "run_regression: Complete" best_rating=best_so_far.rating num_discoveries=length(all_discoveries)
+    end
     sort!(all_discoveries)
     return (best_so_far, g_spec, all_discoveries)
 end
@@ -79,7 +91,7 @@ function regression_main_detailed(
     prespec::AbstractDict{<:Any,<:Any} = Dict();
     verbosity = 1
     )
-    @debug "regression_main: prespec = $prespec"
+    @debug "regression_main:" prespec=prespec
     # Explosions
     op_inv_pre = prespec["op_inventory"]
     op_inv_pre_seq = split_on_semicolons(op_inv_pre)
@@ -102,7 +114,7 @@ function regression_main_detailed(
     new_best_agent_hook = if isnothing(progress_file_stem)
         nothing
     else
-        @debug "regression_main: progress_file_stem = $progress_file_stem"
+        @debug "regression_main:" progress_file_stem=progress_file_stem
         agent -> save_progress_file(progress_file_stem, agent)
     end
 
@@ -111,9 +123,11 @@ function regression_main_detailed(
     (best_agent, genome_spec, all_discoveries) = run_regression(
         X, y, prespec;
         stop_deadline, stop_threshold, new_best_agent_hook, verbosity)
-    @debug_or_info verbosity "regression_main: Best:\n$(very_short_show(best_agent))"
 
-    if !isnothing(best_agent)
+    if isnothing(best_agent)
+        @debug_or_info verbosity "regression_main: No best agent found"
+    else
+        @debug_or_info verbosity "regression_main: Best agent:" best_agent=very_short_show(best_agent)
         sym_res = model_basic_symbolic_output(genome_spec, best_agent)
         @debug_or_info verbosity "regression_main: Best (symbolic): $sym_res"
         y_num_str = careful_string(sym_res.y_num, PythonStyle())

@@ -9,7 +9,7 @@ end
 
 function make_grow_and_rate(rng, job::ExploreSimplifySearchJob)
     spec = job.spec
-
+    @debug "make_grow_and_rate:" num_points=length(job.y) random_subset_count=job.random_subset_count
     if isnothing(job.random_subset_count) || job.random_subset_count > length(job.y)
         X = job.X
         y = job.y
@@ -31,6 +31,8 @@ function make_grow_and_rate(rng, job::ExploreSimplifySearchJob)
     # of 1 to use.
     xs = [collect(c) for c in eachcol(X)]
 
+    @debug "make_grow_and_rate:" num_inputs=length(xs), num_points=length(y)
+
     function grow_and_rate(rng, g_spec, genome)
         return least_squares_ridge_grow_and_rate(
             xs,
@@ -48,7 +50,7 @@ end
 
 function run_island(
     job::ExploreSimplifySearchJob,
-    finished_channel::Channel{Tuple{Population,ExploreSimplifySearchJob}},
+    finished_channel::Channel{Tuple{Union{Nothing,Population},ExploreSimplifySearchJob}},
     ;
     stop_deadline::Union{DateTime,Nothing} = nothing,
     stop_threshold::Union{Real,Nothing} = nothing,
@@ -169,7 +171,7 @@ function run_many_islands(
             end
         end
     end
-    finished_channel = Channel{Tuple{Population,ExploreSimplifySearchJob}}(100)
+    finished_channel = Channel{Tuple{Union{Nothing,Population},ExploreSimplifySearchJob}}(100)
 
     # Provide a source of ID numbers
     island_id_channel = Channel{Int64}(10)
@@ -193,9 +195,7 @@ function run_many_islands(
                     err,
                     catch_backtrace(),
                 )
-                if verbosity > 1
-                    rethrow()
-                end
+                put!(finished_channel, (nothing, job))
             end
         end
     end
@@ -248,7 +248,11 @@ function run_many_islands(
         @debug "run_many_islands: Waiting for island to finish"
         # When one island finishes, launch another
         (result, job) = take!(finished_channel)
-        @debug "run_many_islands: Island finished; launching another"
+        if isnothing(result)
+            @debug_or_info verbosity "run_many_islands: Island failed"
+        else
+            @debug_or_info verbosity "run_many_islands: Island finished; launching another"
+        end
         launch_island(job)
     end
 
