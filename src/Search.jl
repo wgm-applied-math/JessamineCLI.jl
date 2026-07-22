@@ -9,7 +9,6 @@ end
 
 function make_grow_and_rate(rng, job::ExploreSimplifySearchJob)
     spec = job.spec
-    @debug "make_grow_and_rate:" num_points=length(job.y) random_subset_count=job.random_subset_count
     if isnothing(job.random_subset_count) || job.random_subset_count > length(job.y)
         X = job.X
         y = job.y
@@ -18,6 +17,7 @@ function make_grow_and_rate(rng, job::ExploreSimplifySearchJob)
                                      replace=false, ordered=true)
         X = job.X[train_ixs,:]
         y = job.y[train_ixs]
+        @assert length(y) == job.random_subset_count
     end
 
     # The definition of xs should conceptually be just
@@ -31,7 +31,7 @@ function make_grow_and_rate(rng, job::ExploreSimplifySearchJob)
     # of 1 to use.
     xs = [collect(c) for c in eachcol(X)]
 
-    @debug "make_grow_and_rate:" num_inputs=length(xs), num_points=length(y)
+    @debug "make_grow_and_rate:" num_inputs=length(xs) num_points=length(y)
 
     function grow_and_rate(rng, g_spec, genome)
         return least_squares_ridge_grow_and_rate(
