@@ -21,7 +21,7 @@ using Random123
 
 include("ArgsJessamine.jl")
 
-const version = Pkg.project().version
+const version = pkgversion(JessamineCLI)
 
 # autofix_names = true: Means an option like --random-state
 # results in a dictionary item with key "random_state".
