@@ -21,12 +21,14 @@ using Random123
 
 include("ArgsJessamine.jl")
 
+const version = Pkg.project().version
+
 # autofix_names = true: Means an option like --random-state
 # results in a dictionary item with key "random_state".
 s = ArgParseSettings(
     autofix_names = true,
     add_version = true,
-    version = string(Pkg.project().version))
+    version = string(version))
 
 args_config_file = [
     ["--config-file"],
