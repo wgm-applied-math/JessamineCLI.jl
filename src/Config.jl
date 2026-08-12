@@ -32,14 +32,14 @@ end
 function parse_search_spec(ps::AbstractDict, input_size::Int)
     @debug "parse_search_spec: prespec: $ps"
     op_inventory_actual = begin
-        @cfield ps op_inventory "Polynomial"
+        @cfield ps op_inventory "SRBench"
         get_or_build_op_inventory(op_inventory)
     end
     @debug "parse_search_spec: op_inventory_actual: $op_inventory_actual"
     genome_spec = parse_genome_spec(ps, input_size)
     exploration_spec = parse_epoch_spec(op_inventory_actual, ps)
     simplification_spec = nothing
-    simplify_flag = get_or_parse(ps, "simplify", false)
+    simplify_flag = get_or_parse(ps, "simplify", true)
     if simplify_flag
         simplification_prespec = get_or_parse(
             ps, "simplification",
@@ -73,17 +73,17 @@ function parse_epoch_spec(op_inventory, ps::AbstractDict)
     # I'm not putting in separate selection and mutation subsections.
     m_spec = parse_mutation_spec(op_inventory, ps)
     s_spec = parse_selection_spec(ps)
-    @cfield ps max_generations 10
+    @cfield ps max_generations 100
     EpochSpec(; m_spec, s_spec, max_generations)
 end
 
 function parse_genome_spec(ps::AbstractDict, input_size::Int)
     @debug "parse_genome_spec: input_size: $input_size"
     @debug "parse_genome_spec: ps: $ps"
-    @cfield ps output_size 4
-    @cfield ps scratch_size 2
+    @cfield ps output_size 8
+    @cfield ps scratch_size 8
     @cfield ps parameter_size 3
-    @cfield ps num_time_steps 4
+    @cfield ps num_time_steps 3
     genome_spec = GenomeSpec(
         output_size,
         scratch_size,
@@ -192,6 +192,7 @@ end
 Parse a [`StandardWeightScheme`](@ref).
 """
 function parse_op_weight_scheme(ps::AbstractDict = Dict())
+    #! format:off
     StandardWeightScheme(
         ;
         @cfield ps identity 1.0
@@ -214,6 +215,7 @@ function parse_op_weight_scheme(ps::AbstractDict = Dict())
         ,
         @cfield ps fuzzy_logic 4.0
     )
+    #! format:on
 end
 
 function explode(prespecs::AbstractArray, explodable_fields::AbstractVector)
