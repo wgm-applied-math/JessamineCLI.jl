@@ -31,8 +31,10 @@ TOML = "fa267f1f-6049-4f14-aa54-33bafae1ed76"
 TermInterface = "8ea1fca8-c5ef-4a55-8b96-4e9afe9c9a3c"
 
 [sources]
-Jessamine = {path = "../Jessamine.jl"}
-JessamineSymbolics = {path = "../JessamineSymbolics.jl"}
+# Jessamine = {path = "../Jessamine.jl"}
+Jessamine = {url = "https://github.com/wgm-applied-math/Jessamine.jl.git", rev = "v0.4.0"}
+# JessamineSymbolics = {path = "../JessamineSymbolics.jl"}
+JessamineSymbolics = {url = "https://github.com/wgm-applied-math/JessamineSymbolics.jl.git", rev = "v0.4.0"}
 
 [compat]
 Accessors = "0.1.44"
