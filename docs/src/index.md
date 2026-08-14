@@ -4,7 +4,7 @@ CurrentModule = JessamineCLI
 
 # JessamineCLI
 
-Documentation for [JessamineCLI](https://github.com/wgmitchener/JessamineCLI.jl).
+Documentation for [JessamineCLI](https://github.com/wgm-applied-math/JessamineCLI.jl).
 
 ```@index
 ```

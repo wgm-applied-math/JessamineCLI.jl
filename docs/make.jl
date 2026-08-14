@@ -5,10 +5,10 @@ DocMeta.setdocmeta!(JessamineCLI, :DocTestSetup, :(using JessamineCLI); recursiv
 
 makedocs(;
     modules=[JessamineCLI],
-    authors="W. Garrett Mitchener <mitchenerg@charleston.edu> and others",
+    authors="W. G. Mitchener <mitchenerg@charleston.edu> and others",
     sitename="JessamineCLI.jl",
     format=Documenter.HTML(;
-        canonical="https://wgmitchener.github.io/JessamineCLI.jl",
+        canonical="https://wgm-applied-math.github.io/JessamineCLI.jl",
         edit_link="main",
         assets=String[],
     ),
@@ -21,8 +21,7 @@ makedocs(;
 # See "Hosting Documentation" and deploydocs() in the Documenter manual
 # for more information.
 deploydocs(;
-    repo="github.com/wgmitchener/JessamineCLI.jl",
+    repo="github.com/wgm-applied-math/JessamineCLI.jl",
     devbranch="main",
-    devurl = "dev",
     versions = ["stable" => "v^", "v#.#", "dev" =>  "dev"] # Explicitly forces version tracking
 )
