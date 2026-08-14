@@ -126,7 +126,18 @@ add_arg_table!(
     s["setup_samples"], args_config_file..., args_log_file..., setup_args..., sr_args_input..., args_rng..., args_jessamine...)
 
 
+"""
+    cmd_sr(prespec)
+
+Run symbolic regression.
+"""
 function cmd_sr end
+
+"""
+    cmd_setup_samples(prespec)
+
+Create many config files, one for each requested sample.
+"""
 function cmd_setup_samples end
 
 command_table = Dict(
@@ -179,11 +190,6 @@ function (@main)(args = ARGS)
     command_table[command](prespec)
 end
 
-"""
-    cmd_sr(prespec)
-
-Run symbolic regression.
-"""
 function cmd_sr(prespec)
     verbosity = get(prespec, "verbosity", 0)
 
