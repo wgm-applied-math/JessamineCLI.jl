@@ -189,7 +189,7 @@ end
 """
     parse_op_weight_scheme(ps)
 
-Parse a [`StandardWeightScheme`](@ref).
+Parse a `StandardWeightScheme`
 """
 function parse_op_weight_scheme(ps::AbstractDict = Dict())
     #! format:off
