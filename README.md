@@ -1,11 +1,11 @@
-# JessamineCLI
+# JessamineCLI.jl
 
-[![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://wgmitchener.github.io/JessamineCLI.jl/stable/)
-[![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://wgmitchener.github.io/JessamineCLI.jl/dev/)
-[![Build Status](https://github.com/wgmitchener/JessamineCLI.jl/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/wgmitchener/JessamineCLI.jl/actions/workflows/CI.yml?query=branch%3Amain)
+[![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://wgm-applied-math.github.io/JessamineCLI.jl/stable/)
+[![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://wgm-applied-math.github.io/JessamineCLI.jl/dev/)
+[![Build Status](https://github.com/wgm-applied-math/JessamineCLI.jl/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/wgm-applied-math/JessamineCLI.jl/actions/workflows/CI.yml?query=branch%3Amain)
 [![Aqua QA](https://juliatesting.github.io/Aqua.jl/dev/assets/badge.svg)](https://github.com/JuliaTesting/Aqua.jl)
 
-## Overview
+## About
 
 This package holds a command-line interface (CLI) to the [Jessamine.jl](https://github.com/wgm-applied-math/Jessamine.jl) symbolic regression package, which is written in [Julia](https://www.julialang.org).
 It includes features for cooperating with the [SymPy](https://www.sympy.org) symbolic mathematics library for [Python](https://www.python.org).
@@ -14,12 +14,12 @@ Just so you know:
 Jessamine and this CLI are under development.
 Symbolic regression is a complicated calculation with a _lot_ of configuration options and it is not easy to use.
 
-To make this package available in a Julia project environment:
-- Start a project
-- Start a Julia command line and activate the project
-- Type `]` to go to the package interface
-- Then run
-```
+## Installation
+
+As of 2026-08-18, I have not registered this package.
+To use this package within a Julia project, use the [Pkg.jl](https://pkgdocs.julialang.org/v1/) command line,
+
+```julia-repl
 add https://github.com/wgm-applied-math/JessamineCLI.jl#main
 ```
 
